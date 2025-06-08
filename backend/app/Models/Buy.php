@@ -9,37 +9,53 @@ class Buy extends Model
 {
     use HasFactory;
 
-    // Define the table
+    // Set the table name explicitly (if different from 'buys')
     protected $table = 'buys';
 
-    // Disable timestamps
-    public $timestamps = false;
-
-    // Composite primary key
+    // Set primary keys
     protected $primaryKey = ['user_id', 'ticket_id'];
-
-    // Define non-incrementing key
     public $incrementing = false;
 
-    // Mass assignable fields
     protected $fillable = [
         'user_id',
         'ticket_id',
-        'purchase_date'
+        'purchase_date',
     ];
 
-    // Data type casting
     protected $casts = [
-        'purchase_date' => 'date',
+        'purchase_date' => 'datetime',
     ];
 
-    // User relationship
+    /**
+     * Override the getKeyName method to work with composite keys
+     */
+    public function getKeyName()
+    {
+        return ['user_id', 'ticket_id'];
+    }
+
+    /**
+     * Override the getKey method to work with composite keys
+     */
+    public function getKey()
+    {
+        return [
+            'user_id' => $this->getAttribute('user_id'),
+            'ticket_id' => $this->getAttribute('ticket_id'),
+        ];
+    }
+
+    /**
+     * Get the user that owns the purchase
+     */
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    // Ticket relationship (assuming Ticket model exists)
+    /**
+     * Get the ticket that is purchased
+     */
     public function ticket()
     {
         return $this->belongsTo(Ticket::class);
