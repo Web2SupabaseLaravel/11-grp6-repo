@@ -6,6 +6,7 @@ use App\Http\Controllers\API\EventApiController;
 use App\Http\Controllers\API\EventCreationApiController;
 use App\Http\Controllers\API\NotificationController;
 use App\Http\Controllers\API\BuyAPIController;
+use App\Http\Controllers\Api\TicketController;
 
 Route::get('/event-creations/{event_id}/{user_id}', [EventCreationApiController::class, 'show']);
 Route::put('/event-creations/{event_id}/{user_id}', [EventCreationApiController::class, 'update']);
@@ -37,3 +38,5 @@ Route::post('/buys', [BuyAPIController::class, 'store']);
 Route::get('/buys/{user_id}/{ticket_id}/edit', [BuyAPIController::class, 'edit']);
 Route::put('/buys/{user_id}/{ticket_id}', [BuyAPIController::class, 'update']);
 Route::delete('/buys/{user_id}/{ticket_id}', [BuyAPIController::class, 'destroy']);
+
+Route::apiResource('tickets', TicketController::class);
