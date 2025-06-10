@@ -8,6 +8,7 @@ import MyRegistrations from "./Components/amjad-component/My Registrations Page.
 import CreateTicketPage from "./components/qais-components/CreateTicketPage.jsx";
 import SendEmailPage from "./components/qais-components/SendEmailPage.jsx";
 import TicketsInventory from "./components/qais-components/Ticketsinventory.jsx";
+import RegistrantsDashboard from "./components/qais-components/RegistrantsDashboard.jsx"; // ✅ تصحيح الاستيراد
 
 const App = () => {
   return (
@@ -20,6 +21,7 @@ const App = () => {
           <Link to="/create-ticket">Create Ticket</Link>
           <Link to="/send-email">Send Email</Link>
           <Link to="/tickets-inventory">Tickets Inventory</Link>
+          <Link to="/registrants-dashboard">Dashboard</Link> {/* ✅ إضافة الرابط */}
         </nav>
       </header>
 
@@ -27,10 +29,10 @@ const App = () => {
         <Route path="/" element={<AttendeeList />} />
         <Route path="/check-in" element={<CheckInPage />} />
         <Route path="/my-registrations" element={<MyRegistrations />} />
-
         <Route path="/create-ticket" element={<CreateTicketPage />} />
         <Route path="/send-email" element={<SendEmailPage />} />
         <Route path="/tickets-inventory" element={<TicketsInventory />} />
+        <Route path="/registrants-dashboard" element={<RegistrantsDashboard />} /> {/* ✅ إضافة المسار */}
       </Routes>
     </>
   );
