@@ -19,18 +19,18 @@ use App\Http\Controllers\UserController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
+// إضافة route التحقق من الإيميل (public)
+Route::post('/users/check-email', [UserController::class, 'checkEmail']);
+
 /*
 |--------------------------------------------------------------------------
 | Protected Routes (Authentication Required)
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth:api')->group(function () {
-    // رغد حطي هون الاشياء الي لازم يكون مسجل دخول عشان يعملها
+    // هنا تضيف الـ routes اللي تحتاج تسجيل دخول
 
-    
-
-});
-// ملفات المستخدم
+    // ملفات المستخدم محمية
     Route::get('/profile', [AuthController::class, 'profile']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
@@ -58,3 +58,4 @@ Route::middleware('auth:api')->group(function () {
 
     // الأحداث (events)
     Route::apiResource('events', EventApiController::class);
+});
