@@ -1,21 +1,42 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const SignIn = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!email || !password) {
       alert("Please fill in both email and password fields.");
       return;
     }
-    if (password !== "123456") {
-      alert("Incorrect password. Please try again.");
-      return;
+
+    try {
+      const response = await axios.post("http://127.0.0.1:8000/api/login", {
+        email,
+        password
+      }, {
+        headers: {
+          "Accept": "application/json"
+        }
+      });
+
+      console.log("Login success:", response.data);
+      alert("Login successful!");
+      navigate("/dashboard"); // Change to your desired route after login
+
+    } catch (error) {
+      if (error.response) {
+        console.error("Login error:", error.response.data);
+        alert(error.response.data.message || "Login failed.");
+      } else {
+        alert("An error occurred. Please try again.");
+      }
     }
-    console.log("Signing in with:", { email, password });
   };
 
   return (
@@ -123,7 +144,7 @@ const SignIn = () => {
           </div>
         </div>
 
-        {/* Right Side - Illustration (Hidden on small screens) */}
+        {/* Right Side - Illustration */}
         <div className="col-md-6 d-none d-md-flex align-items-center justify-content-center">
           <img
             src="/assets/login-password.png"
