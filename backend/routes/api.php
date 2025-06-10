@@ -30,31 +30,31 @@ Route::middleware('auth:api')->group(function () {
     
 
 });
-// ملفات المستخدم
+
     Route::get('/profile', [AuthController::class, 'profile']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
-    // إدارة المستخدمين (admin مثلا)
+    
     Route::get('/users', [UserController::class, 'index']);
     Route::get('/users/{id}', [UserController::class, 'show']);
     Route::put('/users/{id}', [UserController::class, 'update']);
     Route::delete('/users/{id}', [UserController::class, 'destroy']);
 
-    // إدارة Event Creations
+    
     Route::apiResource('event-creations', EventCreationApiController::class)->parameters([
-        'event-creations' => 'event_creation' // لتفادي التعارض في المعرفات إن أردت
+        'event-creations' => 'event_creation' 
     ]);
 
-    // إشعارات
+    
     Route::apiResource('notifications', NotificationController::class);
 
-    // عمليات الشراء (buys)
+    
     Route::apiResource('buys', BuyAPIController::class)->parameters([
-        'buys' => 'buy' // ضبط اسم المعرفات حسب الحاجة
+        'buys' => 'buy' 
     ]);
 
-    // التذاكر
+    
     Route::apiResource('tickets', TicketController::class);
 
-    // الأحداث (events)
+    
     Route::apiResource('events', EventApiController::class);
