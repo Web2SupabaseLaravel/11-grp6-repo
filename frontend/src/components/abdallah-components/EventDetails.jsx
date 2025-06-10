@@ -72,8 +72,6 @@ const EventDetails = () => {
     );
   }
 
-  // Rest of your component remains the same...
-
   return (
     <div className="container-fluid" style={{ background: 'linear-gradient(135deg, #f8f9ff 0%, #e9ecff 100%)', minHeight: '100vh', paddingTop: '2rem', paddingBottom: '2rem' }}>
       <div className="container">
@@ -197,30 +195,6 @@ const EventDetails = () => {
                   }}>
                     <i className="bi bi-calendar-plus me-2"></i>Register Now
                   </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Event Stats */}
-            <div className="card shadow border-0" style={{ borderRadius: '15px' }}>
-              <div className="card-body p-4">
-                <h5 className="text-primary mb-3" style={{ color: '#7c3aed !important' }}>
-                  <i className="bi bi-graph-up me-2"></i>Event Stats
-                </h5>
-                
-                <div className="row text-center g-3">
-                  <div className="col-6">
-                    <div className="p-2">
-                      <h3 className="mb-0" style={{ color: '#7c3aed' }}>150+</h3>
-                      <small className="text-muted">Attendees</small>
-                    </div>
-                  </div>
-                  <div className="col-6">
-                    <div className="p-2">
-                      <h3 className="mb-0" style={{ color: '#7c3aed' }}>4.9</h3>
-                      <small className="text-muted">Rating</small>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
