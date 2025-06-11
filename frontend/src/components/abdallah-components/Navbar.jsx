@@ -38,10 +38,24 @@ export default function Navbar() {
                 Events
               </Link>
             </li>
-            <li className="nav-item">
-              <Link className="nav-link fw-medium px-3 py-2 rounded-pill mx-1 text-hover-primary" to="/contact">
-                Contact
-              </Link>
+            <li className="nav-item dropdown">
+              <a 
+                className="nav-link dropdown-toggle fw-medium px-3 py-2 rounded-pill mx-1" 
+                href="#" 
+                role="button" 
+                data-bs-toggle="dropdown" 
+                aria-expanded="false"
+              >
+                Manage
+              </a>
+              <ul className="dropdown-menu shadow border-0 mt-2">
+                <li>
+                <Link className="dropdown-item py-2" to="/create-event">Create Event</Link>
+                </li>
+                <li>
+                <Link className="dropdown-item py-2" to="/edit-event">Edit Event</Link>
+                </li>
+              </ul>
             </li>
             <li className="nav-item dropdown">
               <a 

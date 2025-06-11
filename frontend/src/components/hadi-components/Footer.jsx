@@ -2,7 +2,9 @@ import React from 'react';
 
 const EventlyFooter = () => {
   return (
+    
     <footer className="bg-light py-5">
+      
       <div className="container">
         {/* Header Section */}
         <div className="row mb-5">

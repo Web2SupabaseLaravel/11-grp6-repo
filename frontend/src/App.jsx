@@ -1,18 +1,19 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-import Navbar from './components/abdallah-components/Navbar'; // ← تأكد أنك استوردت Navbar
-
+import Navbar from './components/abdallah-components/Navbar'; 
 import EventsPage from './components/abdallah-components/EventsPage';
 import EventDetails from './components/abdallah-components/EventDetails';
 import LandingPage from './components/abdallah-components/LandingPage';
 import OpeningScreen from './components/Raghad-components/OpeningScreen';
+
 import SignIn from './components/Raghad-components/SignIn';
 import SignUp from './components/Raghad-components/SignUp';
 import Forgotpass from './components/Raghad-components/Forgotpass';
 import ResetCode from './components/Raghad-components/ResetCode';
 import Resetpassword from './components/Raghad-components/Resetpassword'; 
 import PassChanged from './components/Raghad-components/PassChanged';
+
 import AttendeeList from "./Components/amjad-component/Attendee List Component.jsx";
 import CheckInPage from "./Components/amjad-component/Check in page.jsx";
 import MyRegistrations from "./Components/amjad-component/My Registrations Page.jsx";
@@ -25,6 +26,10 @@ import AdminDashboard from "./components/noor-components/AdminDashboard.jsx";
 import ReportsDashboard from "./components/noor-components/ReportsDashboard.jsx";
 import EventApproval from "./components/noor-components/EventApproval.jsx";
 import UserManagement from "./components/noor-components/UserManagement.jsx";
+
+import EventifyForm from './components/hadi-components/CreateEvent.jsx';
+import EditeEvent from './components/hadi-components/EditeEvent.jsx';
+import EventlyFooter from './components/hadi-components/Footer.jsx';
 
 function App() {
   return (
@@ -62,8 +67,14 @@ function App() {
           <Route path="/reports-dashboard" element={<ReportsDashboard />} />
           <Route path="/event-approval" element={<EventApproval />} />
           <Route path="/user-managment" element={<UserManagement />} />
+
+          {/* Hadi */}
+          <Route path="/create-event" element={<EventifyForm />} />
+          <Route path="/edit-event" element={<EditeEvent />} />
+
         </Routes>
       </div>
+      <EventlyFooter/>
     </Router>
   );
 }
