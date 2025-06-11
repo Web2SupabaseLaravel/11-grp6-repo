@@ -21,6 +21,8 @@ import MyRegistrations from "./Components/amjad-component/My Registrations Page.
 import CreateTicketPage from "./components/qais-components/CreateTicketPage.jsx";
 import SendEmailPage from "./components/qais-components/SendEmailPage.jsx";
 import TicketsInventory from "./components/qais-components/Ticketsinventory.jsx";
+import RegistrantsDashboard from "./components/qais-components/RegistrantsDashboard.jsx";
+
 
 import AdminDashboard from "./components/noor-components/AdminDashboard.jsx";
 import ReportsDashboard from "./components/noor-components/ReportsDashboard.jsx";
@@ -61,6 +63,7 @@ function App() {
           <Route path="/create-ticket" element={<CreateTicketPage />} />
           <Route path="/send-email" element={<SendEmailPage />} />
           <Route path="/tickets-inventory" element={<TicketsInventory />} />
+          <Route path="/registrants-dashboard" element={<RegistrantsDashboard />} />
 
           {/* Noor */}
           <Route path="/admin-dashboard" element={<AdminDashboard />} />

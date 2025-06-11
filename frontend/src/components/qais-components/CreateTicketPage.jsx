@@ -9,23 +9,48 @@ const CreateTicketPage = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [tickets, setTickets] = useState([]);
+  const [showTickets, setShowTickets] = useState(true); // Show tickets automatically
+  const [isLoadingTickets, setIsLoadingTickets] = useState(true);
+
+  // Load existing tickets from API on component mount
+  useEffect(() => {
+    const loadTickets = async () => {
+      try {
+        setIsLoadingTickets(true);
+        const response = await fetch('http://127.0.0.1:8000/api/tickets');
+        if (response.ok) {
+          const data = await response.json();
+          setTickets(data);
+          console.log('Loaded tickets:', data);
+        } else {
+          console.error('Failed to load tickets');
+        }
+      } catch (error) {
+        console.error('Error loading tickets:', error);
+      } finally {
+        setIsLoadingTickets(false);
+      }
+    };
+
+    loadTickets();
+  }, []);
 
   // Validation function
   const validateForm = () => {
     if (!eventName.trim()) {
-      setError('اسم الفعالية مطلوب');
+      setError('Event name is required');
       return false;
     }
     if (!ticketType.trim()) {
-      setError('نوع التذكرة مطلوب');
+      setError('Ticket type is required');
       return false;
     }
     if (!ticketTitle.trim()) {
-      setError('عنوان التذكرة مطلوب');
+      setError('Ticket title is required');
       return false;
     }
     if (!price || parseFloat(price) <= 0) {
-      setError('السعر يجب أن يكون أكبر من صفر');
+      setError('Price must be greater than zero');
       return false;
     }
     return true;
@@ -41,74 +66,75 @@ const CreateTicketPage = () => {
     setIsLoading(true);
 
     try {
-      // API call to create ticket
-      const response = await fetch('/api/tickets', {
+      // Prepare data for sending
+      const ticketData = {
+        event_name: eventName.trim(),
+        ticket_type: ticketType.trim(),
+        ticket_title: ticketTitle.trim(),
+        price: parseFloat(price)
+      };
+
+      // Send to API
+      const response = await fetch('http://127.0.0.1:8000/api/tickets', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          eventName: eventName.trim(),
-          ticketType: ticketType.trim(),
-          ticketTitle: ticketTitle.trim(),
-          price: parseFloat(price),
-          createdAt: new Date().toISOString()
-        }),
+        body: JSON.stringify(ticketData)
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      if (response.ok) {
+        const newTicket = await response.json();
+        
+        // Add ticket to local state
+        setTickets(prevTickets => [...prevTickets, newTicket]);
+        
+        console.log('Ticket created successfully:', newTicket);
+        setSuccess('Ticket created successfully!');
+        
+        // Clear form
+        setEventName('');
+        setTicketType('');
+        setTicketTitle('');
+        setPrice('');
+        
+        // Make sure tickets are visible
+        setShowTickets(true);
+      } else {
+        const errorData = await response.json();
+        setError(errorData.message || 'An error occurred while creating the ticket');
       }
-
-      const result = await response.json();
-      
-      setSuccess('تم إنشاء التذكرة بنجاح!');
-      
-      // Clear form
-      setEventName('');
-      setTicketType('');
-      setTicketTitle('');
-      setPrice('');
-      
-      // Refresh tickets list
-      await fetchTickets();
       
     } catch (error) {
       console.error('Error creating ticket:', error);
-      setError('حدث خطأ أثناء إنشاء التذكرة. يرجى المحاولة مرة أخرى.');
+      setError('An error occurred while creating the ticket. Please try again.');
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Fetch all tickets
-  const fetchTickets = async () => {
+  // Delete ticket
+  const handleDeleteTicket = async (ticketId) => {
+    if (!window.confirm('Are you sure you want to delete this ticket?')) {
+      return;
+    }
+
     try {
-      const response = await fetch('/api/tickets');
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      const response = await fetch(`http://127.0.0.1:8000/api/tickets/${ticketId}`, {
+        method: 'DELETE'
+      });
+
+      if (response.ok) {
+        setTickets(prevTickets => prevTickets.filter(ticket => ticket.ticket_id !== ticketId));
+        setSuccess('Ticket deleted successfully');
+      } else {
+        setError('An error occurred while deleting the ticket');
       }
-      
-      const ticketsData = await response.json();
-      setTickets(ticketsData);
-      
     } catch (error) {
-      console.error('Error fetching tickets:', error);
-      setError('خطأ في تحميل التذاكر');
+      console.error('Error deleting ticket:', error);
+      setError('An error occurred while deleting the ticket');
     }
   };
-
-  // View tickets function
-  const handleViewTickets = async () => {
-    setError('');
-    await fetchTickets();
-  };
-
-  // Load tickets on component mount
-  useEffect(() => {
-    fetchTickets();
-  }, []);
 
   // Clear messages after 5 seconds
   useEffect(() => {
@@ -217,14 +243,6 @@ const CreateTicketPage = () => {
               <rect x="110" y="50" width="30" height="20" rx="4" fill="#8447e9"/>
               <text x="125" y="63" fill="white" fontSize="10" textAnchor="middle">$</text>
               
-              {/* Hand holding/creating ticket */}
-              <ellipse cx="90" cy="145" rx="30" ry="18" fill="#fbbf24" opacity="0.9"/>
-              <path d="M70 135 Q90 150 110 135" stroke="#f59e0b" strokeWidth="3" fill="none"/>
-              
-              {/* Fingers detail */}
-              <ellipse cx="75" cy="130" rx="8" ry="4" fill="#f59e0b" opacity="0.8"/>
-              <ellipse cx="105" cy="130" rx="8" ry="4" fill="#f59e0b" opacity="0.8"/>
-              
               {/* Sparkle effects around ticket */}
               <circle cx="160" cy="30" r="3" fill="#8447e9" opacity="0.7">
                 <animate attributeName="opacity" values="0.7;0.3;0.7" dur="2s" repeatCount="indefinite"/>
@@ -271,6 +289,7 @@ const CreateTicketPage = () => {
                   value={eventName}
                   onChange={(e) => setEventName(e.target.value)}
                   disabled={isLoading}
+                  placeholder="Enter event name..."
                   style={{
                     width: '100%',
                     border: '1px solid #d1d5db',
@@ -301,6 +320,7 @@ const CreateTicketPage = () => {
                   value={ticketType}
                   onChange={(e) => setTicketType(e.target.value)}
                   disabled={isLoading}
+                  placeholder="VIP, Regular, Student..."
                   style={{
                     width: '100%',
                     border: '1px solid #d1d5db',
@@ -340,6 +360,7 @@ const CreateTicketPage = () => {
                   value={ticketTitle}
                   onChange={(e) => setTicketTitle(e.target.value)}
                   disabled={isLoading}
+                  placeholder="Enter ticket title..."
                   style={{
                     width: '100%',
                     border: '1px solid #d1d5db',
@@ -372,6 +393,7 @@ const CreateTicketPage = () => {
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
                   disabled={isLoading}
+                  placeholder="0.00"
                   style={{
                     width: '100%',
                     border: '1px solid #d1d5db',
@@ -438,45 +460,68 @@ const CreateTicketPage = () => {
                   'Submit'
                 )}
               </button>
-              <button
-                onClick={handleViewTickets}
-                disabled={isLoading}
-                style={{
-                  border: '1px solid #8447e9',
-                  color: '#8447e9',
-                  backgroundColor: 'white',
-                  borderRadius: '6px',
-                  padding: '12px 20px',
-                  fontSize: '1rem',
-                  fontWeight: '500',
-                  cursor: isLoading ? 'not-allowed' : 'pointer',
-                  transition: 'all 0.2s',
-                  minWidth: '160px',
-                  opacity: isLoading ? 0.6 : 1
-                }}
-                onMouseOver={(e) => {
-                  if (!isLoading) {
-                    e.target.style.backgroundColor = '#8447e9';
-                    e.target.style.color = 'white';
-                  }
-                }}
-                onMouseOut={(e) => {
-                  if (!isLoading) {
-                    e.target.style.backgroundColor = 'white';
-                    e.target.style.color = '#8447e9';
-                  }
-                }}
-              >
-                View other tickets
-              </button>
+              
+              {tickets.length > 0 && (
+                <button
+                  onClick={() => setShowTickets(!showTickets)}
+                  disabled={isLoading}
+                  style={{
+                    border: '1px solid #8447e9',
+                    color: '#8447e9',
+                    backgroundColor: 'white',
+                    borderRadius: '6px',
+                    padding: '12px 20px',
+                    fontSize: '1rem',
+                    fontWeight: '500',
+                    cursor: isLoading ? 'not-allowed' : 'pointer',
+                    transition: 'all 0.2s',
+                    minWidth: '160px',
+                    opacity: isLoading ? 0.6 : 1
+                  }}
+                  onMouseOver={(e) => {
+                    if (!isLoading) {
+                      e.target.style.backgroundColor = '#8447e9';
+                      e.target.style.color = 'white';
+                    }
+                  }}
+                  onMouseOut={(e) => {
+                    if (!isLoading) {
+                      e.target.style.backgroundColor = 'white';
+                      e.target.style.color = '#8447e9';
+                    }
+                  }}
+                >
+                  {showTickets ? 'Hide tickets' : 'Show tickets'} ({tickets.length})
+                </button>
+              )}
             </div>
 
           </div>
 
         </div>
 
-        {/* Tickets List */}
-        {tickets.length > 0 && (
+        {/* Tickets List - Shows automatically when there are tickets */}
+        {isLoadingTickets ? (
+          <div style={{
+            backgroundColor: 'white',
+            borderRadius: '12px',
+            padding: '40px',
+            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+            border: '1px solid #e5e7eb',
+            textAlign: 'center'
+          }}>
+            <div style={{
+              width: '40px',
+              height: '40px',
+              border: '4px solid #f3f4f6',
+              borderTop: '4px solid #8447e9',
+              borderRadius: '50%',
+              animation: 'spin 1s linear infinite',
+              margin: '0 auto 16px'
+            }}></div>
+            <p style={{ color: '#6b7280', margin: 0 }}>Loading tickets...</p>
+          </div>
+        ) : showTickets && tickets.length > 0 ? (
           <div style={{
             backgroundColor: 'white',
             borderRadius: '12px',
@@ -499,11 +544,12 @@ const CreateTicketPage = () => {
               gap: '16px'
             }}>
               {tickets.map((ticket, index) => (
-                <div key={ticket.id || index} style={{
+                <div key={ticket.ticket_id || index} style={{
                   border: '1px solid #e5e7eb',
                   borderRadius: '8px',
                   padding: '16px',
-                  backgroundColor: '#f9fafb'
+                  backgroundColor: '#f9fafb',
+                  position: 'relative'
                 }}>
                   <h3 style={{
                     color: '#8447e9',
@@ -512,21 +558,21 @@ const CreateTicketPage = () => {
                     marginBottom: '8px',
                     margin: '0 0 8px 0'
                   }}>
-                    {ticket.ticketTitle}
+                    {ticket.title}
                   </h3>
                   <p style={{
                     color: '#6b7280',
                     fontSize: '0.9rem',
                     margin: '4px 0'
                   }}>
-                    <strong>Event:</strong> {ticket.eventName}
+                    <strong>Event ID:</strong> {ticket.event_id}
                   </p>
                   <p style={{
                     color: '#6b7280',
                     fontSize: '0.9rem',
                     margin: '4px 0'
                   }}>
-                    <strong>Type:</strong> {ticket.ticketType}
+                    <strong>Type:</strong> {ticket.type}
                   </p>
                   <p style={{
                     color: '#059669',
@@ -536,11 +582,43 @@ const CreateTicketPage = () => {
                   }}>
                     ${ticket.price}
                   </p>
+                  <button
+                    onClick={() => handleDeleteTicket(ticket.ticket_id)}
+                    style={{
+                      position: 'absolute',
+                      top: '12px',
+                      right: '12px',
+                      backgroundColor: '#dc2626',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      padding: '4px 8px',
+                      fontSize: '0.75rem',
+                      cursor: 'pointer'
+                    }}
+                    onMouseOver={(e) => e.target.style.backgroundColor = '#b91c1c'}
+                    onMouseOut={(e) => e.target.style.backgroundColor = '#dc2626'}
+                  >
+                    ×
+                  </button>
                 </div>
               ))}
             </div>
           </div>
-        )}
+        ) : !isLoadingTickets && tickets.length === 0 ? (
+          <div style={{
+            backgroundColor: 'white',
+            borderRadius: '12px',
+            padding: '40px',
+            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+            border: '1px solid #e5e7eb',
+            textAlign: 'center'
+          }}>
+            <p style={{ color: '#6b7280', fontSize: '1.1rem', margin: 0 }}>
+              No tickets found. Create your first ticket!
+            </p>
+          </div>
+        ) : null}
       </div>
 
       {/* CSS Animation for Loading Spinner */}
