@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const TicketsInventory = () => {
+  const navigate = useNavigate();
+  
   // State management
   const [filterBy, setFilterBy] = useState('Event');
   const [ticketType, setTicketType] = useState('');
@@ -155,14 +158,14 @@ const TicketsInventory = () => {
 
   // Edit ticket function
   const handleEdit = (ticketId) => {
-    // Navigate to edit page or open modal
-    window.location.href = `/tickets/edit/${ticketId}`;
+    // Navigate to edit page using React Router
+    navigate(`/tickets/edit/${ticketId}`);
   };
 
   // View ticket function
   const handleView = (ticketId) => {
-    // Navigate to view page or open modal
-    window.location.href = `/tickets/${ticketId}`;
+    // Navigate to view page using React Router
+    navigate(`/tickets/${ticketId}`);
   };
 
   // Filter and search tickets
@@ -185,7 +188,7 @@ const TicketsInventory = () => {
   const totalRevenue = filteredTickets.reduce((sum, ticket) => sum + (ticket.price * ticket.sold), 0);
 
   const handleAddTickets = () => {
-    window.location.href = '/tickets/create';
+    navigate('/create-ticket');
   };
 
   const handleImportExport = () => {
