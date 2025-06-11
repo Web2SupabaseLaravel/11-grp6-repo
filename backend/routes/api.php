@@ -19,6 +19,9 @@ use App\Http\Controllers\UserController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
+// إضافة route التحقق من الإيميل (public)
+Route::post('/users/check-email', [UserController::class, 'checkEmail']);
+
 /*
 |--------------------------------------------------------------------------
 | Protected Routes (Authentication Required)
@@ -58,3 +61,4 @@ Route::middleware('auth:api')->group(function () {
 
     
     Route::apiResource('events', EventApiController::class);
+});
