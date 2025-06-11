@@ -4,8 +4,7 @@ import { Link } from 'react-router-dom';
 export default function Navbar() {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm px-4">
-      <div className="container">
-        <Link className="navbar-brand d-flex align-items-center" to="/Home">
+        <Link className="navbar-brand d-flex align-items-center ms-5" to="/Home">
           <img 
             src="/assets/MyLogoFree.png" 
             alt="Logo" 
@@ -46,7 +45,7 @@ export default function Navbar() {
                 data-bs-toggle="dropdown" 
                 aria-expanded="false"
               >
-                Manage
+                Add
               </a>
               <ul className="dropdown-menu shadow border-0 mt-2">
                 <li>
@@ -56,6 +55,31 @@ export default function Navbar() {
                 <Link className="dropdown-item py-2" to="/edit-event">Edit Event</Link>
                 </li>
               </ul>
+            </li>
+            <li className="nav-item dropdown">
+              <a 
+                className="nav-link dropdown-toggle fw-medium px-3 py-2 rounded-pill mx-1" 
+                href="#" 
+                role="button" 
+                data-bs-toggle="dropdown" 
+                aria-expanded="false"
+              >
+                Manage
+              </a>
+            <ul className="dropdown-menu shadow border-0 mt-2">
+                <li>
+                    <Link className="dropdown-item py-2" to="/create-ticket">Create Ticket</Link>
+                </li>
+                <li>
+                    <Link className="dropdown-item py-2" to="/tickets-inventory">Tickets Inventory</Link>
+                </li>
+                <li>
+                    <Link className="dropdown-item py-2" to="/registrants-dashboard">Registeration Dashboard</Link>
+                </li>
+                <li>
+                    <Link className="dropdown-item py-2" to="/send-email">Send Email for Attendees</Link>
+                </li>
+            </ul>
             </li>
             <li className="nav-item dropdown">
               <a 
@@ -95,7 +119,7 @@ export default function Navbar() {
             </li>
           </ul>
         </div>
-      </div>
+      
 
       <style jsx>{`
         .text-hover-primary:hover {
