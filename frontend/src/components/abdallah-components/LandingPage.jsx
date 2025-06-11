@@ -13,24 +13,6 @@ export default function EventlyLanding() {
         href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" 
         rel="stylesheet" 
       />
-      
-
-      <nav className="navbar navbar-expand-lg navbar-dark" style={{ backgroundColor: 'rgba(0,0,0,0.1)' }}>
-        <div className="container">
-          <a className="navbar-brand fw-bold fs-3" href="#" style={{ color: '#fff' }}>
-            Evently
-          </a>
-          <button className="navbar-toggler" type="button">
-            <span className="navbar-toggler-icon"></span>
-          </button>
-          <div className="navbar-nav ms-auto">
-            <a className="nav-link text-white mx-2" href="#">Home</a>
-            <a className="nav-link text-white mx-2" href="#">Events</a>
-            <a className="nav-link text-white mx-2" href="#">About</a>
-            <a className="nav-link text-white mx-2" href="#">Contact</a>
-          </div>
-        </div>
-      </nav>
 
       <div className="container py-5">
         <div className="row align-items-center min-vh-100">
