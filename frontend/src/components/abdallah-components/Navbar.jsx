@@ -80,7 +80,10 @@ export default function Navbar() {
                     <Link className="dropdown-item py-2" to="/send-email">Send Email for Attendees</Link>
                 </li>
             </ul>
+            
             </li>
+
+            
             <li className="nav-item dropdown">
               <a 
                 className="nav-link dropdown-toggle fw-medium px-3 py-2 rounded-pill mx-1" 
@@ -98,7 +101,30 @@ export default function Navbar() {
                 <li><Link className="dropdown-item py-2" to="/user-managment">User Management</Link></li>
               </ul>
             </li>
-            {/* Buttons */}
+            <li className="nav-item dropdown">
+              <a 
+                className="nav-link dropdown-toggle fw-medium px-3 py-2 rounded-pill mx-1" 
+                href="#" 
+                role="button" 
+                data-bs-toggle="dropdown" 
+                aria-expanded="false"
+              >
+                Registerations
+              </a>
+            <ul className="dropdown-menu shadow border-0 mt-2">
+            <li>
+                <Link className="dropdown-item py-2" to="/List">Attendee List</Link>
+            </li>
+            <li>
+                <Link className="dropdown-item py-2" to="/check-in">Check in</Link>
+            </li>
+            <li>
+                <Link className="dropdown-item py-2" to="/my-registrations">My Registrations</Link>
+            </li> 
+            </ul>
+            
+            </li>
+            
             <li className="nav-item ms-3">
                 <Link 
                     to="/sign-in" 

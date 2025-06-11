@@ -4,15 +4,20 @@ import { Link } from 'react-router-dom';
 export default function EventlyLanding() {
   return (
     <div style={{ 
-      background: 'linear-gradient(135deg,rgb(155, 85, 151) 0%,rgb(115, 40, 190) 100%)',
-      minHeight: '100vh',
-      fontFamily: 'Arial, sans-serif'
-    }}>
+  backgroundImage: `url("https://ehufjjspxnrbesbufwkv.supabase.co/storage/v1/object/public/images//pexels-photo-3178786.jpg")`,
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+  backgroundRepeat: 'no-repeat',
+  minHeight: '100vh',
+  fontFamily: 'Arial, sans-serif'
+}}>
+
 
       <link 
         href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" 
         rel="stylesheet" 
       />
+      
 
       <div className="container py-5">
         <div className="row align-items-center min-vh-100">
@@ -81,18 +86,10 @@ export default function EventlyLanding() {
                 Join a lot of event organizers who trust Evently
               </p>
               <div className="row text-center">
-                <div className="col-4">
-                  <h4 className="text-white fw-bold">Many</h4>
-                  <small className="text-white" style={{ opacity: '0.8' }}>Events</small>
-                </div>
-                <div className="col-4">
-                  <h4 className="text-white fw-bold">Many</h4>
-                  <small className="text-white" style={{ opacity: '0.8' }}>Organizers</small>
-                </div>
-                <div className="col-4">
-                  <h4 className="text-white fw-bold">99%</h4>
-                  <small className="text-white" style={{ opacity: '0.8' }}>Satisfaction</small>
-                </div>
+
+                <h4 className="text-white fw-bold">99%</h4>
+                <small className="text-white" style={{ opacity: '0.8' }}>Satisfaction</small>
+
               </div>
             </div>
           </div>

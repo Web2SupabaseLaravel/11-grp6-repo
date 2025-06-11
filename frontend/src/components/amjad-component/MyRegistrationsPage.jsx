@@ -188,33 +188,7 @@ const MyRegistrationsPage = () => {
       {/* Tailwind CSS (for custom modals) */}
       <script src="https://cdn.tailwindcss.com"></script>
       
-      {/* Navigation */}
-      <nav className="navbar navbar-expand-lg navbar-light bg-white border-bottom">
-        <div className="container-fluid">
-          <a className="navbar-brand fw-bold fs-4" href="#" style={{ color: '#6c5ce7' }}>
-            evently
-          </a>
-          <button 
-            className="navbar-toggler" 
-            type="button" 
-            data-bs-toggle="collapse" 
-            data-bs-target="#navbarNav"
-          >
-            <span className="navbar-toggler-icon"></span>
-          </button>
-          <div className="collapse navbar-collapse" id="navbarNav">
-            <div className="navbar-nav ms-auto d-flex flex-row align-items-center gap-3">
-              <a className="nav-link text-muted d-none d-lg-block" href="#">Page</a>
-              <a className="nav-link text-muted d-none d-lg-block" href="#">Page</a>
-              <a className="nav-link text-muted" href="#">Events</a>
-              <button className="btn btn-primary btn-sm" style={{ backgroundColor: '#6c5ce7', borderColor: '#6c5ce7' }}>
-                Sign Up
-              </button>
-              <button className="btn btn-outline-primary btn-sm">Log In</button>
-            </div>
-          </div>
-        </div>
-      </nav>
+      
 
       {/* Main Content */}
       <div className="container-fluid mt-4">

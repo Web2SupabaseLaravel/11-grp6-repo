@@ -230,27 +230,6 @@ const CheckInPage = () => {
       <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
       
       <div className="min-vh-100 bg-light">
-        <nav className="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
-          <div className="container-fluid px-3 px-lg-4">
-            <a className="navbar-brand fw-bold fs-4 text-primary" href="#" style={{ color: '#6c5ce7' }}>
-              evently
-            </a>
-            <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-              <span className="navbar-toggler-icon"></span>
-            </button>
-            <div className="collapse navbar-collapse" id="navbarNav">
-              <div className="navbar-nav ms-auto d-flex align-items-center gap-2">
-                <a className="nav-link text-muted d-none d-lg-block" href="#">Home</a>
-                <a className="nav-link text-muted d-none d-lg-block" href="#">About</a>
-                <a className="nav-link text-muted" href="#">Events</a>
-                <button className="btn btn-outline-primary btn-sm mx-1">Log In</button>
-                <button className="btn btn-primary btn-sm mx-1" style={{ backgroundColor: '#6c5ce7', borderColor: '#6c5ce7' }}>
-                  Sign Up
-                </button>
-              </div>
-            </div>
-          </div>
-        </nav>
 
         <div className="container-fluid py-4">
           <div className="row justify-content-center">
