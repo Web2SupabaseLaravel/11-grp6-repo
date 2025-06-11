@@ -4,9 +4,9 @@ export default function Navbar() {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-white px-4 h-3">
       <div className="container">
-        <a className="navbar-brand" href="/">
+        <a className="navbar-brand" href="/Home">
           <img 
-            src="../../../public/assets/MyLogoFree.png" 
+            src="/assets/MyLogoFree.png" 
             alt="Logo" 
             height="30"
             className="d-inline-block align-text-top me-2 mt-0 mb-0"
@@ -28,7 +28,7 @@ export default function Navbar() {
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto">
             <li className="nav-item">
-              <a className="nav-link active" href="/">Home</a>
+              <a className="nav-link active" href="/Home">Home</a>
             </li>
             <li className="nav-item">
               <a className="nav-link" href="/about">About</a>

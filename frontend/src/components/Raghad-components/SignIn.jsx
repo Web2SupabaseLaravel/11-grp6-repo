@@ -128,18 +128,18 @@ const SignIn = () => {
                 </Link>
               </div>
 
-              {/* Submit Button */}
-              <button
-                type="submit"
-                className="btn w-100 py-3 fw-medium"
-                style={{
-                  backgroundColor: "#8447E9",
-                  color: "white",
-                  borderRadius: "8px",
-                }}
-              >
-                Sign in
-              </button>
+              <Link to="/Home">
+                <button
+                  className="btn w-100 py-3 fw-medium"
+                  style={{
+                    backgroundColor: "#8447E9",
+                    color: "white",
+                    borderRadius: "8px",
+                  }}
+                >
+                  Sign in
+                </button>
+              </Link>
             </form>
           </div>
         </div>
