@@ -1,20 +1,21 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 export default function Navbar() {
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-white px-4 h-3">
+    <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm px-4">
       <div className="container">
-        <a className="navbar-brand" href="/Home">
+        <Link className="navbar-brand d-flex align-items-center" to="/Home">
           <img 
             src="/assets/MyLogoFree.png" 
             alt="Logo" 
-            height="30"
-            className="d-inline-block align-text-top me-2 mt-0 mb-0"
+            height="32"
+            className="me-2"
           />
-        </a>
+        </Link>
 
         <button 
-          className="navbar-toggler" 
+          className="navbar-toggler border-0" 
           type="button" 
           data-bs-toggle="collapse" 
           data-bs-target="#navbarNav" 
@@ -26,38 +27,81 @@ export default function Navbar() {
         </button>
 
         <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav ms-auto">
+          <ul className="navbar-nav ms-auto align-items-center">
             <li className="nav-item">
-              <a className="nav-link active" href="/Home">Home</a>
+              <Link className="nav-link fw-medium px-3 py-2 rounded-pill mx-1 text-hover-primary" to="/Home">
+                Home
+              </Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/about">About</a>
+              <Link className="nav-link fw-medium px-3 py-2 rounded-pill mx-1 text-hover-primary" to="/events">
+                Events
+              </Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/contact">Contact</a>
+              <Link className="nav-link fw-medium px-3 py-2 rounded-pill mx-1 text-hover-primary" to="/contact">
+                Contact
+              </Link>
             </li>
-
-            {/* Dropdown inside navbar-nav */}
             <li className="nav-item dropdown">
               <a 
-                className="nav-link dropdown-toggle" 
+                className="nav-link dropdown-toggle fw-medium px-3 py-2 rounded-pill mx-1" 
                 href="#" 
                 role="button" 
                 data-bs-toggle="dropdown" 
                 aria-expanded="false"
               >
-                Dropdown
+                Admin
               </a>
-              <ul className="dropdown-menu">
-                <li><a className="dropdown-item" href="#">Action</a></li>
-                <li><a className="dropdown-item" href="#">Another action</a></li>
-                <li><hr className="dropdown-divider" /></li>
-                <li><a className="dropdown-item" href="#">Something else here</a></li>
+              <ul className="dropdown-menu shadow border-0 mt-2">
+                <li><Link className="dropdown-item py-2" to="/admin-dashboard">Admin Dashboard</Link></li>
+                <li><Link className="dropdown-item py-2" to="/event-approval">Event Approval</Link></li>
+                <li><Link className="dropdown-item py-2" to="/reports-dashboard">Reports Dashboard</Link></li>
+                <li><Link className="dropdown-item py-2" to="/user-managment">User Management</Link></li>
               </ul>
+            </li>
+            {/* Buttons */}
+            <li className="nav-item ms-3">
+                <Link 
+                    to="/sign-in" 
+                    className="btn btn-outline-primary custom-outline rounded-pill px-4 py-2"
+                    style={{ borderColor: '#8447E9', color: '#8447E9' }}
+                >
+                    Login
+                </Link>
+                </li>
+                <li className="nav-item ms-2">
+                <Link 
+                    to="/signup" 
+                    className="btn custom-filled rounded-pill px-4 py-2 text-white"
+                    style={{ backgroundColor: '#8447E9' }}
+                >
+                    Sign Up
+                </Link>
             </li>
           </ul>
         </div>
       </div>
+
+      <style jsx>{`
+        .text-hover-primary:hover {
+          color: #0d6efd !important;
+          background-color: rgba(13, 110, 253, 0.1);
+        }
+        .dropdown-menu {
+          border-radius: 0.5rem;
+        }
+        .dropdown-item:hover {
+          background-color: rgba(13, 110, 253, 0.1);
+          color: #0d6efd;
+        }
+            /* Hover for Login button */
+        .btn-outline-primary.custom-outline:hover {
+            background-color:rgb(236, 224, 255);
+            color: white;
+            border-color: #8447E9;
+        }
+      `}</style>
     </nav>
   );
 }

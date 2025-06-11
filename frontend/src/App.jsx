@@ -1,5 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
+import Navbar from './components/abdallah-components/Navbar'; // ← تأكد أنك استوردت Navbar
+
 import EventsPage from './components/abdallah-components/EventsPage';
 import EventDetails from './components/abdallah-components/EventDetails';
 import LandingPage from './components/abdallah-components/LandingPage';
@@ -26,11 +29,16 @@ import UserManagement from "./components/noor-components/UserManagement.jsx";
 function App() {
   return (
     <Router>
+      <Navbar /> {/* ✅ الآن داخل <Router> */}
+
       <div className="App">
         <Routes>
+          {/* Abdallah */}
           <Route path="/Home" element={<LandingPage />} />
           <Route path="/events" element={<EventsPage />} />
-          <Route path="/event/:id" element={<EventDetails/>} />
+          <Route path="/event/:id" element={<EventDetails />} />
+
+          {/* Raghad */}
           <Route path="/" element={<OpeningScreen />} />
           <Route path="/sign-in" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
@@ -38,41 +46,26 @@ function App() {
           <Route path="/reset-code" element={<ResetCode />} />
           <Route path="/reset-password" element={<Resetpassword />} />
           <Route path="/password-changed" element={<PassChanged />} />
+
+          {/* Amjad */}
           <Route path="/List" element={<AttendeeList />} />
           <Route path="/check-in" element={<CheckInPage />} />
           <Route path="/my-registrations" element={<MyRegistrations />} />
 
+          {/* Qais */}
           <Route path="/create-ticket" element={<CreateTicketPage />} />
           <Route path="/send-email" element={<SendEmailPage />} />
           <Route path="/tickets-inventory" element={<TicketsInventory />} />
 
+          {/* Noor */}
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/reports-dashboard" element={<ReportsDashboard />} />
           <Route path="/event-approval" element={<EventApproval />} />
-          <Route path="user-managment" element={<UserManagement />} />
+          <Route path="/user-managment" element={<UserManagement />} />
         </Routes>
       </div>
     </Router>
   );
 }
 
-/*
-
-<header>
-        <nav>
-          <Link to="/">Home</Link>
-          <Link to="/check-in">Check-In</Link>
-          <Link to="/my-registrations">My Registrations</Link>
-          <Link to="/create-ticket">Create Ticket</Link>
-          <Link to="/send-email">Send Email</Link>
-          <Link to="/tickets-inventory">Tickets Inventory</Link>
-
-          <Link to="/admin-dashboard">Admin Dashboard</Link>
-          <Link to="/reports-dashboard">Reports Dashboard</Link>
-          <Link to="/event-approval">Event Approval</Link>
-          <Link to="user-managment">User Management</Link>
-        </nav>
-      </header>
-
-*/
 export default App;
