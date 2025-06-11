@@ -13,13 +13,3 @@ createRoot(document.getElementById('root')).render(
 
   </StrictMode>,
 )
-/*
-import EditeEvent from './components/hadi-components/EditeEvent.jsx';
-import EventifyForm from './components/hadi-components/CreateEvent.jsx';
-import EventlyFooter from './components/hadi-components/Footer.jsx';
-
-<EventifyForm/>
-<EditeEvent/>
-<EventlyFooter/>
-
-*/
