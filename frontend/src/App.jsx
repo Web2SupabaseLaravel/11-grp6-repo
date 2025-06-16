@@ -23,7 +23,6 @@ import SendEmailPage from "./components/qais-components/SendEmailPage.jsx";
 import TicketsInventory from "./components/qais-components/Ticketsinventory.jsx";
 import RegistrantsDashboard from "./components/qais-components/RegistrantsDashboard.jsx";
 
-
 import AdminDashboard from "./components/noor-components/AdminDashboard.jsx";
 import ReportsDashboard from "./components/noor-components/ReportsDashboard.jsx";
 import EventApproval from "./components/noor-components/EventApproval.jsx";
@@ -32,16 +31,17 @@ import UserManagement from "./components/noor-components/UserManagement.jsx";
 import EventifyForm from './components/hadi-components/CreateEvent.jsx';
 import EditeEvent from './components/hadi-components/EditeEvent.jsx';
 import EventlyFooter from './components/hadi-components/Footer.jsx';
+import EventManagementPage from './components/hadi-components/ListEvent.jsx';
 
 function App() {
   return (
     <Router>
-      <Navbar /> {/* ✅ الآن داخل <Router> */}
+      <Navbar />
 
       <div className="App">
         <Routes>
           {/* Abdallah */}
-          <Route path="/Home" element={<LandingPage />} />
+          <Route path="/home" element={<LandingPage />} />
           <Route path="/events" element={<EventsPage />} />
           <Route path="/event/:id" element={<EventDetails />} />
 
@@ -55,9 +55,9 @@ function App() {
           <Route path="/password-changed" element={<PassChanged />} />
 
           {/* Amjad */}
-          <Route path="/List" element={<AttendeeList/>} />
-          <Route path="/check-in" element={<CheckInPage/>} />
-          <Route path="/my-registrations" element={<MyRegistrationsPage/>} />
+          <Route path="/list" element={<AttendeeList />} />
+          <Route path="/check-in" element={<CheckInPage />} />
+          <Route path="/my-registrations" element={<MyRegistrationsPage />} />
 
           {/* Qais */}
           <Route path="/create-ticket" element={<CreateTicketPage />} />
@@ -69,15 +69,17 @@ function App() {
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/reports-dashboard" element={<ReportsDashboard />} />
           <Route path="/event-approval" element={<EventApproval />} />
-          <Route path="/user-managment" element={<UserManagement />} />
+          <Route path="/user-management" element={<UserManagement />} />
 
           {/* Hadi */}
           <Route path="/create-event" element={<EventifyForm />} />
-          <Route path="/edit-event" element={<EditeEvent />} />
-
+          <Route path="/list-event" element={<EventManagementPage />} />
+          <Route path="/edit-event/:id" element={<EditeEvent />} />
+          {/* أضفت مسار تعديل الحدث مع id لو احتجت */} 
         </Routes>
       </div>
-      <EventlyFooter/>
+
+      <EventlyFooter />
     </Router>
   );
 }

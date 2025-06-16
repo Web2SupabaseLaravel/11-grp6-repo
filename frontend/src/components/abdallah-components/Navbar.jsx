@@ -52,7 +52,7 @@ export default function Navbar() {
                 <Link className="dropdown-item py-2" to="/create-event">Create Event</Link>
                 </li>
                 <li>
-                <Link className="dropdown-item py-2" to="/edit-event">Edit Event</Link>
+                <Link className="dropdown-item py-2" to="/list-event">Edit Event</Link>
                 </li>
               </ul>
             </li>

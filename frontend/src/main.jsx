@@ -6,6 +6,8 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import EventsPage from './components/abdallah-components/EventsPage.jsx';
 import App from './App.jsx';
 
+
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     

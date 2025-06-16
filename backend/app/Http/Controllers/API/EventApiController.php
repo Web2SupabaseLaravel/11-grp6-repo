@@ -5,19 +5,14 @@ namespace App\Http\Controllers\API;
 use App\Models\Event;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+
 class EventApiController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         return response()->json(Event::all(), 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -37,9 +32,6 @@ class EventApiController extends Controller
         return response()->json($event, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show($id)
     {
         $event = Event::find($id);
@@ -51,9 +43,6 @@ class EventApiController extends Controller
         return response()->json($event, 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, $id)
     {
         $event = Event::find($id);
@@ -64,9 +53,15 @@ class EventApiController extends Controller
 
         $validated = $request->validate([
             'title' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
             'country' => 'nullable|string',
             'city' => 'nullable|string',
-            'description' => 'nullable|string',
+            'speaker_name' => 'nullable|string',
+            'job_title' => 'nullable|string', // إذا تبي تخزنها
+            'ticket_type' => 'nullable|string', // لو في حقل في DB
+            'capacity' => 'nullable|integer',
+            'start_datetime' => 'nullable|date',
+            'image' => 'nullable|string', // لو ترسل رابط صورة أو اسم
         ]);
 
         $event->update($validated);
@@ -74,9 +69,6 @@ class EventApiController extends Controller
         return response()->json($event, 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy($id)
     {
         $event = Event::find($id);
