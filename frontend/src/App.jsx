@@ -75,7 +75,7 @@ function App() {
           <Route path="/create-event" element={<EventifyForm />} />
           <Route path="/list-event" element={<EventManagementPage />} />
           <Route path="/edit-event/:id" element={<EditeEvent />} />
-          {/* أضفت مسار تعديل الحدث مع id لو احتجت */} 
+          
         </Routes>
       </div>
 

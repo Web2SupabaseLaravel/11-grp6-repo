@@ -4,11 +4,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\EventApiController;
 use App\Http\Controllers\API\EventCreationApiController;
 use App\Http\Controllers\API\NotificationController;
-use App\Http\Controllers\API\BuyAPIController;
 use App\Http\Controllers\Api\TicketController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
-
+use App\Http\Controllers\Api\BuyController;
 /*
 |--------------------------------------------------------------------------
 | Public Routes
@@ -49,9 +48,15 @@ Route::middleware('auth:api')->group(function () {
     Route::apiResource('notifications', NotificationController::class);
 
     
-    Route::apiResource('buys', BuyAPIController::class)->parameters([
-        'buys' => 'buy' 
-    ]);
+    
+
+    Route::prefix('buys')->group(function () {
+        Route::get('/', [BuyController::class, 'index']);                      
+        Route::post('/', [BuyController::class, 'store']);                    
+        Route::get('/{user_id}/{ticket_id}', [BuyController::class, 'show']); 
+        Route::delete('/{user_id}/{ticket_id}', [BuyController::class, 'destroy']); 
+    });
+
 
     
     Route::apiResource('tickets', TicketController::class);

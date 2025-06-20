@@ -57,11 +57,11 @@ class EventApiController extends Controller
             'country' => 'nullable|string',
             'city' => 'nullable|string',
             'speaker_name' => 'nullable|string',
-            'job_title' => 'nullable|string', // إذا تبي تخزنها
-            'ticket_type' => 'nullable|string', // لو في حقل في DB
+            'job_title' => 'nullable|string', 
+            'ticket_type' => 'nullable|string', 
             'capacity' => 'nullable|integer',
             'start_datetime' => 'nullable|date',
-            'image' => 'nullable|string', // لو ترسل رابط صورة أو اسم
+            'image' => 'nullable|string', 
         ]);
 
         $event->update($validated);
