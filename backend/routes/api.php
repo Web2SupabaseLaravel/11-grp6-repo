@@ -8,21 +8,12 @@ use App\Http\Controllers\Api\TicketController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Api\BuyController;
-/*
-|--------------------------------------------------------------------------
-| Public Routes
-|--------------------------------------------------------------------------
-*/
 
-// تسجيل مستخدم جديد وتسجيل دخول
+
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-/*
-|--------------------------------------------------------------------------
-| Protected Routes (Authentication Required)
-|--------------------------------------------------------------------------
-*/
+
 Route::middleware('auth:api')->group(function () {
     Route::middleware('auth:api')->get('/user', function () {
     return response()->json(auth()->user());

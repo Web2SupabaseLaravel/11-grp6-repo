@@ -8,6 +8,40 @@ const EventDetails = () => {
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [userId, setUserId] = useState(null);
+  const [selectedTicketId, setSelectedTicketId] = useState('');
+
+  const handleRegister = async () => {
+    if (!userId || !selectedTicketId) {
+      alert('Please select a ticket before registering.');
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+
+      const response = await axios.post('http://127.0.0.1:8000/api/buys', {
+        user_id: parseInt(userId),
+        ticket_id: parseInt(selectedTicketId),
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json',
+        },
+      });
+
+      alert('Registration successful!');
+      console.log(response.data);
+    } catch (error) {
+      if (error.response && error.response.status === 409) {
+        alert('You already registered this ticket.');
+      } else {
+        alert('Registration failed. Please try again.');
+      }
+      console.error(error);
+    }
+  };
+
 
  useEffect(() => {
   const token = localStorage.getItem('token');
@@ -21,6 +55,7 @@ const EventDetails = () => {
     })
     .then(res => {
       console.log('User ID:', res.data.id);
+      setUserId(res.data.id);
     })
     .catch(err => {
       console.error('Failed to fetch user info:', err);
@@ -92,7 +127,7 @@ const EventDetails = () => {
   return (
     <div className="container-fluid" style={{ background: 'linear-gradient(135deg, #f8f9ff 0%, #e9ecff 100%)', minHeight: '100vh', paddingTop: '2rem', paddingBottom: '2rem' }}>
       <div className="container">
-        {/* Header Section */}
+
         <div className="row mb-5">
           <div className="col-12">
             <div className="card shadow-lg border-0" style={{ borderRadius: '20px', overflow: 'hidden' }}>
@@ -113,9 +148,9 @@ const EventDetails = () => {
           </div>
         </div>
 
-        {/* Main Content */}
+
         <div className="row">
-          {/* Event Details */}
+
           <div className="col-lg-8 mb-4">
             <div className="card shadow border-0 h-100" style={{ borderRadius: '15px' }}>
               <div className="card-body p-4">
@@ -168,7 +203,6 @@ const EventDetails = () => {
             </div>
           </div>
 
-          {/* Speaker & Registration */}
           <div className="col-lg-4">
             <div className="card shadow border-0 mb-4" style={{ borderRadius: '15px' }}>
               <div className="card-body p-4 text-center">
@@ -194,7 +228,11 @@ const EventDetails = () => {
                 <p className="text-muted mb-4">Event Speaker</p>
                 
                 <div className="d-grid gap-2">
-                  <select className="form-select">
+                  <select 
+                    className="form-select"
+                    value={selectedTicketId}
+                    onChange={(e) => setSelectedTicketId(e.target.value)}
+                  >
                     <option value="">Select a Ticket</option>
                     {tickets.map(ticket => (
                       <option key={ticket.ticket_id} value={ticket.ticket_id}>
@@ -202,14 +240,18 @@ const EventDetails = () => {
                       </option>
                     ))}
                   </select>
-                  <button className="btn btn-lg fw-semibold shadow" style={{ 
-                    backgroundColor: '#7c3aed', 
-                    border: 'none',
-                    borderRadius: '12px',
-                    color: 'white',
-                    padding: '12px 24px',
-                    transition: 'all 0.3s ease'
-                  }}>
+                  <button 
+                    className="btn btn-lg fw-semibold shadow" 
+                    style={{ 
+                      backgroundColor: '#7c3aed', 
+                      border: 'none',
+                      borderRadius: '12px',
+                      color: 'white',
+                      padding: '12px 24px',
+                      transition: 'all 0.3s ease'
+                    }}
+                    onClick={handleRegister}
+                  >
                     <i className="bi bi-calendar-plus me-2"></i>Register Now
                   </button>
                 </div>
@@ -219,7 +261,6 @@ const EventDetails = () => {
         </div>
       </div>
 
-      {/* Custom Styles */}
       <style jsx>{`
         .text-shadow {
           text-shadow: 2px 2px 4px rgba(0,0,0,0.3);

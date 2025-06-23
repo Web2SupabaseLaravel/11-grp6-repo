@@ -42,7 +42,7 @@ function AppContent() {
       {!shouldHideNavbar && <Navbar />}
       <div className="App">
         <Routes>
-          {/* Abdallah */}
+          {/* Abdallah (Including the Navbar up there)*/}
           <Route path="/home" element={<LandingPage />} />
           <Route path="/events" element={<EventsPage />} />
           <Route path="/event/:id" element={<EventDetails />} />
@@ -73,7 +73,7 @@ function AppContent() {
           <Route path="/event-approval" element={<EventApproval />} />
           <Route path="/user-management" element={<UserManagement />} />
 
-          {/* Hadi */}
+          {/* Hadi (Including the footer down there)*/}
           <Route path="/create-event" element={<EventifyForm />} />
           <Route path="/list-event" element={<EventManagementPage />} />
           <Route path="/edit-event/:id" element={<EditeEvent />} />

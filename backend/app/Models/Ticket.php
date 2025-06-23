@@ -6,15 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Ticket extends Model
 {
-    protected $table = 'ticket';  // اسم الجدول
-
-    protected $primaryKey = 'ticket_id'; // المفتاح الأساسي غير افتراضي
-
-    public $incrementing = false; // لأن ticket_id كبير وممكن نحدد قيمته بنفسنا
-
+    protected $table = 'ticket';
+    protected $primaryKey = 'ticket_id';
+    public $incrementing = false;
     protected $keyType = 'int';
-
-    public $timestamps = false; // إذا ما في created_at و updated_at في الجدول
+    public $timestamps = false;
 
     protected $fillable = [
         'ticket_id',
@@ -23,4 +19,12 @@ class Ticket extends Model
         'type',
         'price',
     ];
+
+    /**
+     * Get the event that the ticket belongs to.
+     */
+    public function event()
+    {
+        return $this->belongsTo(Event::class, 'event_id', 'event_id');
+    }
 }
