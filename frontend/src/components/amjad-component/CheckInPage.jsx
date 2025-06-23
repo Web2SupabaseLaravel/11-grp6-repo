@@ -11,79 +11,51 @@ const CheckInPage = () => {
   const [selectedTicket, setSelectedTicket] = useState('');
   const [checkinsLoading, setCheckinsLoading] = useState(true);
 
-  // Base URL for your Laravel API
-  const API_BASE_URL = 'http://localhost:8000/api'; // Make sure this is your correct Laravel API URL
+  const API_BASE_URL = 'http://localhost:8000/api';
 
-  // Fetch initial data when the page loads
-  useEffect(() => {
-    const fetchInitialData = async () => {
-      try {
-        console.log('🔄 Fetching initial data...');
+  const fetchInitialData = async () => {
+    setCheckinsLoading(true);
+    try {
+      const usersResponse = await axios.get(`${API_BASE_URL}/users`);
+      setUsers(usersResponse.data);
 
-        // Fetch users from /api/users
-        const usersResponse = await axios.get(`${API_BASE_URL}/users`);
-        console.log('📥 Users Response:', usersResponse.data);
-        // Assuming usersResponse.data is an array of user objects directly
-        setUsers(usersResponse.data);
+      const ticketsResponse = await axios.get(`${API_BASE_URL}/tickets`);
+      setTickets(ticketsResponse.data);
 
-        // Fetch tickets from /api/tickets
-        const ticketsResponse = await axios.get(`${API_BASE_URL}/tickets`);
-        console.log('📥 Tickets Response:', ticketsResponse.data);
-        // Assuming ticketsResponse.data is an array of ticket objects directly
-        setTickets(ticketsResponse.data);
-
-        // Fetch recent check-ins (buys)
-        const buysResponse = await axios.get(`${API_BASE_URL}/buys`);
-        console.log('📥 Buys Response:', buysResponse.data);
-
-        // Ensure buysResponse.data.data exists and is an array
-        if (buysResponse.data && Array.isArray(buysResponse.data.data)) {
-          const recentData = buysResponse.data.data
-            .slice(-5) // Last 5 check-ins
-            .reverse()
-            .map(buy => ({
-              id: buy.id,
-              name: buy.user?.name || `User ${buy.user_id}`,
-              email: buy.user?.email || '',
-              // Check if buy.ticket exists and has a 'title' or 'name' property
-              ticketName: buy.ticket?.title || buy.ticket?.name || `Ticket ${buy.ticket_id}`, 
-              time: new Date(buy.purchase_date).toLocaleTimeString('en-US', {
+      // Fetch recent buys (considered check-ins based on your DB structure)
+      const buysResponse = await axios.get(`${API_BASE_URL}/buys`);
+      if (buysResponse.data && Array.isArray(buysResponse.data.data)) {
+        const recentData = buysResponse.data.data
+          .slice(-5) // Get the last 5 records
+          .reverse() // Display newest first
+          .map(buy => ({
+            id: `${buy.user_id}-${buy.ticket_id}`, // Unique ID for React key
+            name: buy.user?.name || `User ${buy.user_id}`,
+            email: buy.user?.email || '',
+            ticketName: buy.ticket?.title || buy.ticket?.type || `Ticket ${buy.ticket_id}`,
+            time: buy.purchase_date ? new Date(buy.purchase_date).toLocaleTimeString('en-US', {
                 hour: '2-digit',
                 minute: '2-digit'
-              })
-            }));
-          setRecentCheckins(recentData);
-        } else {
-            console.warn('Recent buys data is not in the expected format (buysResponse.data.data is missing or not an array).');
-            setRecentCheckins([]); // Set to empty array if format is unexpected
-        }
-
-      } catch (error) {
-        console.error('❌ Error fetching initial data:', error);
-        console.error('Error details:', error.response?.data);
-
-        // Fallback to dummy data in case of error
-        setUsers([
-          { id: 1, name: 'John Doe', email: 'john@example.com' },
-          { id: 2, name: 'Jane Smith', email: 'jane@example.com' },
-          { id: 3, name: 'Bob Johnson', email: 'bob@example.com' }
-        ]);
-
-        setTickets([
-          { id: 1, title: 'VIP Ticket', price: 100 }, // Changed 'name' to 'title' as per Laravel Ticket model schema
-          { id: 2, title: 'General Admission', price: 50 },
-          { id: 3, title: 'Student Ticket', price: 25 }
-        ]);
-        setStatus('❌ Failed to load initial data. Using dummy data.');
-      } finally {
-        setCheckinsLoading(false);
+            }) : 'N/A'
+          }));
+        setRecentCheckins(recentData);
+      } else {
+          console.warn('Recent buys data is not in the expected format (buysResponse.data.data is missing or not an array).');
+          setRecentCheckins([]);
       }
-    };
 
+    } catch (error) {
+      console.error('Error fetching initial data:', error.response?.data || error.message);
+      setStatus('Failed to load initial data.');
+    } finally {
+      setCheckinsLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchInitialData();
   }, []);
 
-  // Find user by ID or email
   const findUser = (searchValue) => {
     return users.find(user =>
       user.id.toString() === searchValue.toString() ||
@@ -91,7 +63,6 @@ const CheckInPage = () => {
     );
   };
 
-  // Check for existing registration (client-side for now, optimize with API if needed)
   const checkExistingRegistration = async (userId, ticketId) => {
     try {
       const response = await axios.get(`${API_BASE_URL}/buys`);
@@ -103,7 +74,7 @@ const CheckInPage = () => {
       }
       return false;
     } catch (error) {
-      console.error('Error checking existing registration:', error);
+      console.error('Error checking existing registration:', error.response?.data || error.message);
       return false;
     }
   };
@@ -123,7 +94,6 @@ const CheckInPage = () => {
     setStatus('Processing...');
 
     try {
-      // Find the user
       const user = findUser(searchTerm.trim());
       if (!user) {
         setStatus('User not found');
@@ -131,7 +101,6 @@ const CheckInPage = () => {
         return;
       }
 
-      // Check for existing registration
       const existingRegistration = await checkExistingRegistration(user.id, selectedTicket);
       if (existingRegistration) {
         setStatus('User already checked in for this ticket');
@@ -139,61 +108,50 @@ const CheckInPage = () => {
         return;
       }
 
-      // Create a new registration (buy)
-      // We are hitting the /buys endpoint as per your api.php for purchase/check-in
+      // Create a new buy record (which implies check-in)
       const response = await axios.post(`${API_BASE_URL}/buys`, {
         user_id: user.id,
         ticket_id: selectedTicket,
-        purchase_date: new Date().toISOString() // Or send the current date/time from the backend if preferred
+        purchase_date: new Date().toISOString()
+        // 'status' is not sent here as it's not in the DB
       });
 
-      console.log('✅ Success:', response.data);
-
-      if (response.data.message === 'Buy created successfully' || response.data.data) { // Assuming success message or data presence
+      if (response.data.status === 'success' && response.data.data) {
         setStatus('✅ Check-in successful!');
 
-        // Add the new check-in to the list
         const newCheckin = {
-          id: response.data.data.id,
+          id: `${response.data.data.user_id}-${response.data.data.ticket_id}`,
           name: user.name,
           email: user.email,
-          ticketName: tickets.find(t => t.id.toString() === selectedTicket.toString())?.title || `Ticket ${selectedTicket}`,
-          time: new Date().toLocaleTimeString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit'
-          })
+          ticketName: tickets.find(t => t.ticket_id.toString() === selectedTicket.toString())?.title || `Ticket ${selectedTicket}`,
+          time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
         };
 
         setRecentCheckins(prev => [newCheckin, ...prev.slice(0, 4)]);
-
-        // Reset the form
         setSearchTerm('');
         setSelectedTicket('');
 
-        // Reset status after 3 seconds
         setTimeout(() => {
           setStatus('Waiting');
         }, 3000);
       } else {
-          setStatus('❌ Check-in failed: Unexpected API response');
+        setStatus('❌ Check-in failed: Unexpected API response');
       }
     } catch (error) {
-      console.error('❌ Error:', error.response?.data || error.message);
+      console.error('Error during manual check-in:', error.response?.data || error.message);
       if (error.response?.data?.message) {
         setStatus(`❌ ${error.response.data.message}`);
       } else if (error.response?.data?.errors) {
-          // Handle Laravel validation errors
           const firstError = Object.values(error.response.data.errors)[0][0];
           setStatus(`❌ ${firstError}`);
       } else {
         setStatus('❌ Something went wrong');
       }
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
-  // Auto-suggestions while typing
   const getSuggestions = () => {
     if (!searchTerm.trim()) return [];
 
@@ -276,7 +234,6 @@ const CheckInPage = () => {
                           onChange={(e) => setSearchTerm(e.target.value)}
                         />
                         
-                        {/* Suggestions list */}
                         {suggestions.length > 0 && searchTerm && (
                           <div className="position-absolute w-100 bg-white border rounded shadow-sm mt-1" style={{zIndex: 1000}}>
                             {suggestions.map((user) => (
@@ -308,9 +265,8 @@ const CheckInPage = () => {
                           <option value="">Choose a ticket...</option>
                           {tickets.length > 0 ? (
                             tickets.map((ticket) => (
-                              // Use ticket.title as the display name if available, otherwise fallback to ticket.name
-                              <option key={ticket.id} value={ticket.id}>
-                                {ticket.title || ticket.name || `Ticket ${ticket.id}`} {ticket.price && `- ${ticket.price}`}
+                              <option key={ticket.ticket_id} value={ticket.ticket_id}>
+                                {ticket.title || ticket.type || `Ticket ${ticket.ticket_id}`} {ticket.price && `- ${ticket.price}`}
                               </option>
                             ))
                           ) : (

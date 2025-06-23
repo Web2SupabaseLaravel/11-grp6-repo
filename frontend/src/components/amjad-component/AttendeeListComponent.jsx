@@ -1,86 +1,93 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const AttendeeList = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('All Attendees');
   const [ticketTypeFilter, setTicketTypeFilter] = useState('Ticket Type');
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [attendees, setAttendees] = useState([]);
 
-  const [attendees, setAttendees] = useState([
-    {
-      id: 1,
-      name: 'John Sagmoen',
-      email: 'john@aannet.com',
-      status: 'Checked in',
-      registered: '1 day ago',
-      ticketType: 'Regular'
-    },
-    {
-      id: 2,
-      name: 'John Anthaon',
-      email: 'john@damnis.com',
-      status: 'Pending',
-      registered: '2 days ago',
-      ticketType: 'Regular'
-    },
-    {
-      id: 3,
-      name: 'Rob Morrett',
-      email: 'doe@damnis.com',
-      status: 'Pending',
-      registered: '5 hours ago',
-      ticketType: 'Regular'
-    },
-    {
-      id: 4,
-      name: 'Mark Storman',
-      email: 'mark@aannet.com',
-      status: 'Pending',
-      registered: '1 day ago',
-      ticketType: 'Regular'
-    },
-    {
-      id: 5,
-      name: 'Billy Mithera',
-      email: 'milly@ammail.com',
-      status: 'VIP',
-      registered: '2 days ago',
-      ticketType: 'VIP'
-    },
-    {
-      id: 6,
-      name: 'Joe Watrins',
-      email: 'tcm@aannet.com',
-      status: 'Pending',
-      registered: '1 day ago',
-      ticketType: 'Regular'
-    },
-    {
-      id: 7,
-      name: 'John Roberts',
-      email: 'roberts@email.com',
-      status: 'Pending',
-      registered: '1 day ago',
-      ticketType: 'Regular'
+  const API_BASE_URL = 'http://localhost:8000/api';
+
+  const fetchAttendees = async () => {
+    setIsRefreshing(true);
+    try {
+      const buysResponse = await axios.get(`${API_BASE_URL}/buys`);
+      const buysData = buysResponse.data.data;
+
+      const combinedAttendees = buysData.map(buy => {
+        const user = buy.user;
+        const ticket = buy.ticket;
+
+        const registeredDate = buy.purchase_date ? new Date(buy.purchase_date).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        }) : 'N/A';
+
+        // we'll determine the display status fbased on available information or default.
+        let displayStatus = 'Pending';
+        if (ticket && ticket.type === 'VIP') {
+            displayStatus = 'VIP';
+        }
+        // If there's an external check-in system or a way to infer "checked in",
+        // you would implement that logic here. Otherwise, it's just 'Pending' or 'VIP'.
+
+        return {
+          id: `${buy.user_id}-${buy.ticket_id}`,
+          name: user ? user.name : 'Unknown User',
+          email: user ? user.email : 'Unknown Email',
+          status: displayStatus, // This is for display and filtering on the frontend
+          registered: registeredDate,
+          ticketType: ticket ? ticket.type : 'Unknown Type',
+          originalBuy: buy // Keep the original buy object for actions
+        };
+      });
+
+      setAttendees(combinedAttendees);
+    } catch (error) {
+      console.error('Error fetching attendees:', error.response?.data || error.message);
+    } finally {
+      setIsRefreshing(false);
     }
-  ]);
+  };
 
-  const handleCheckIn = (attendeeId) => {
-    setAttendees(prevAttendees => 
-      prevAttendees.map(attendee => 
-        attendee.id === attendeeId 
-          ? { ...attendee, status: 'Checked in' }
-          : attendee
-      )
-    );
+  useEffect(() => {
+    fetchAttendees();
+  }, []);
+
+  const handleCheckIn = async (attendeeId, originalBuy) => {
+    // As per your request, the 'status' field is NOT in the database.
+    // Therefore, this 'check-in' action will only update the UI state locally.
+    // If you need to persist a check-in status, you MUST implement a separate mechanism
+    // (e.g., a new 'check_ins' table, or modify your 'buys' table to include status).
+    try {
+      // You are NOT sending 'status' to the backend here.
+      // If you had a dedicated API endpoint for marking a user as "checked in"
+      // without modifying the 'buys' table, you would call it here.
+      // Example (hypothetical):
+      // await axios.post(`${API_BASE_URL}/checkins`, {
+      //   user_id: originalBuy.user_id,
+      //   ticket_id: originalBuy.ticket_id,
+      //   checked_in_at: new Date().toISOString()
+      // });
+
+      setAttendees(prevAttendees =>
+        prevAttendees.map(attendee =>
+          attendee.id === attendeeId
+            ? { ...attendee, status: 'Checked in' } // Update frontend state visually
+            : attendee
+        )
+      );
+      console.log(`Attendee ${attendeeId} checked in (frontend visual only).`);
+    } catch (error) {
+      console.error('Error in handleCheckIn (status persistence may be missing on backend):', error.response?.data || error.message);
+    }
   };
 
   const handleRefresh = () => {
-    setIsRefreshing(true);
-    setTimeout(() => {
-      setIsRefreshing(false);
-      console.log('List refreshed');
-    }, 1000);
+    fetchAttendees();
   };
 
   const getStatusBadge = (status) => {
@@ -98,7 +105,7 @@ const AttendeeList = () => {
 
   const filteredAttendees = attendees.filter(attendee => {
     const matchesSearch = attendee.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         attendee.email.toLowerCase().includes(searchTerm.toLowerCase());
+                          attendee.email.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === 'All Attendees' || attendee.status === statusFilter;
     const matchesTicketType = ticketTypeFilter === 'Ticket Type' || attendee.ticketType === ticketTypeFilter;
     return matchesSearch && matchesStatus && matchesTicketType;
@@ -112,15 +119,12 @@ const AttendeeList = () => {
 
   return (
     <>
-      {/* Bootstrap CSS */}
-      <link 
-        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" 
-        rel="stylesheet" 
+      <link
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+        rel="stylesheet"
       />
-      
-      <div className="min-vh-100 bg-light">
 
-        {/* Main Content */}
+      <div className="min-vh-100 bg-light">
         <div className="container-fluid py-4">
           <div className="row justify-content-center">
             <div className="col-12 col-xl-11">
@@ -130,7 +134,7 @@ const AttendeeList = () => {
                   <div className="d-flex align-items-center gap-2">
                     <span className="badge bg-primary">{filteredAttendees.length} attendees</span>
                     {(searchTerm || statusFilter !== 'All Attendees' || ticketTypeFilter !== 'Ticket Type') && (
-                      <button 
+                      <button
                         className="btn btn-outline-secondary btn-sm"
                         onClick={clearFilters}
                       >
@@ -139,17 +143,16 @@ const AttendeeList = () => {
                     )}
                   </div>
                 </div>
-                
-                {/* Filters */}
+
                 <div className="row g-3 mb-4">
                   <div className="col-12 col-md-4">
                     <div className="input-group">
                       <span className="input-group-text bg-white border-end-0">
                         🔍
                       </span>
-                      <input 
-                        type="text" 
-                        className="form-control border-start-0" 
+                      <input
+                        type="text"
+                        className="form-control border-start-0"
                         placeholder="Search by name or email"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
@@ -157,7 +160,7 @@ const AttendeeList = () => {
                     </div>
                   </div>
                   <div className="col-6 col-md-4">
-                    <select 
+                    <select
                       className="form-select"
                       value={statusFilter}
                       onChange={(e) => setStatusFilter(e.target.value)}
@@ -169,7 +172,7 @@ const AttendeeList = () => {
                     </select>
                   </div>
                   <div className="col-6 col-md-4">
-                    <select 
+                    <select
                       className="form-select"
                       value={ticketTypeFilter}
                       onChange={(e) => setTicketTypeFilter(e.target.value)}
@@ -181,7 +184,6 @@ const AttendeeList = () => {
                   </div>
                 </div>
 
-                {/* Results count */}
                 {filteredAttendees.length === 0 ? (
                   <div className="text-center py-5">
                     <div className="text-muted">
@@ -191,7 +193,6 @@ const AttendeeList = () => {
                   </div>
                 ) : (
                   <>
-                    {/* Desktop Table */}
                     <div className="table-responsive d-none d-md-block">
                       <table className="table table-hover">
                         <thead className="table-light">
@@ -221,10 +222,10 @@ const AttendeeList = () => {
                                 </span>
                               </td>
                               <td>
-                                <button 
+                                <button
                                   className="btn btn-sm text-white fw-medium px-3"
                                   style={{ backgroundColor: attendee.status === 'Checked in' ? '#6c757d' : '#6c5ce7', border: 'none' }}
-                                  onClick={() => handleCheckIn(attendee.id)}
+                                  onClick={() => handleCheckIn(attendee.id, attendee.originalBuy)}
                                   disabled={attendee.status === 'Checked in'}
                                 >
                                   {attendee.status === 'Checked in' ? 'Checked ✓' : 'Check in'}
@@ -236,7 +237,6 @@ const AttendeeList = () => {
                       </table>
                     </div>
 
-                    {/* Mobile Cards */}
                     <div className="d-md-none">
                       {filteredAttendees.map((attendee) => (
                         <div key={attendee.id} className="card mb-3">
@@ -255,10 +255,10 @@ const AttendeeList = () => {
                                 <div>📅 {attendee.registered}</div>
                                 <div>🎫 {attendee.ticketType}</div>
                               </div>
-                              <button 
+                              <button
                                 className="btn btn-sm text-white fw-medium px-3"
                                 style={{ backgroundColor: attendee.status === 'Checked in' ? '#6c757d' : '#6c5ce7', border: 'none' }}
-                                onClick={() => handleCheckIn(attendee.id)}
+                                onClick={() => handleCheckIn(attendee.id, attendee.originalBuy)}
                                 disabled={attendee.status === 'Checked in'}
                               >
                                 {attendee.status === 'Checked in' ? 'Checked ✓' : 'Check in'}
@@ -271,9 +271,8 @@ const AttendeeList = () => {
                   </>
                 )}
 
-                {/* Actions */}
                 <div className="d-flex flex-column flex-sm-row gap-2 mt-4">
-                  <button 
+                  <button
                     className="btn btn-outline-secondary"
                     onClick={handleRefresh}
                     disabled={isRefreshing}
@@ -296,7 +295,6 @@ const AttendeeList = () => {
           </div>
         </div>
 
-        {/* Footer */}
         <footer className="text-center text-muted mt-5 pb-4">
           <div className="container">
             <small>© 2025 Evently, All rights reserved.</small>
@@ -304,7 +302,6 @@ const AttendeeList = () => {
         </footer>
       </div>
 
-      {/* Bootstrap JS */}
       <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     </>
   );
