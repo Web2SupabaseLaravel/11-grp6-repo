@@ -26,8 +26,8 @@ const SignIn = () => {
       });
 
       console.log("Login success:", response.data);
-      alert("Login successful!");
-      navigate("/dashboard"); // Change to your desired route after login
+      localStorage.setItem("token", response.data.token);
+      navigate("/Home"); // Change to your desired route after login
 
     } catch (error) {
       if (error.response) {
@@ -128,18 +128,18 @@ const SignIn = () => {
                 </Link>
               </div>
 
-              <Link to="/Home">
-                <button
-                  className="btn w-100 py-3 fw-medium"
-                  style={{
-                    backgroundColor: "#8447E9",
-                    color: "white",
-                    borderRadius: "8px",
-                  }}
-                >
-                  Sign in
-                </button>
-              </Link>
+              <button
+                type="submit" 
+                className="btn w-100 py-3 fw-medium"
+                style={{
+                  backgroundColor: "#8447E9",
+                  color: "white",
+                  borderRadius: "8px",
+                }}
+              >
+                Sign in
+              </button>
+
             </form>
           </div>
         </div>

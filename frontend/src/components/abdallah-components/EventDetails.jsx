@@ -9,35 +9,52 @@ const EventDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        
-        // Fetch event data
-        const eventResponse = await axios.get('http://127.0.0.1:8000/api/events');
-        const matchedEvent = eventResponse.data.find(e => e.event_id.toString() === id);
-        if (!matchedEvent) {
-          throw new Error('Event not found');
-        }
-        setEvent(matchedEvent);
-        
-        // Fetch tickets data
-        const ticketsResponse = await axios.get('http://127.0.0.1:8000/api/tickets');
-        const eventTickets = ticketsResponse.data.filter(ticket => 
-          ticket.event_id.toString() === id
-        );
-        setTickets(eventTickets);
-        
-      } catch (err) {
-        setError(err.message || 'Something went wrong');
-      } finally {
-        setLoading(false);
-      }
-    };
+ useEffect(() => {
+  const token = localStorage.getItem('token');
 
-    fetchData();
-  }, [id]);
+  if (token) {
+    axios.get('http://127.0.0.1:8000/api/user', { 
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+      },
+    })
+    .then(res => {
+      console.log('User ID:', res.data.id);
+    })
+    .catch(err => {
+      console.error('Failed to fetch user info:', err);
+    });
+  }
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      
+      // Fetch event data
+      const eventResponse = await axios.get('http://127.0.0.1:8000/api/events');
+      const matchedEvent = eventResponse.data.find(e => e.event_id.toString() === id);
+      if (!matchedEvent) {
+        throw new Error('Event not found');
+      }
+      setEvent(matchedEvent);
+      
+      // Fetch tickets data
+      const ticketsResponse = await axios.get('http://127.0.0.1:8000/api/tickets');
+      const eventTickets = ticketsResponse.data.filter(ticket => 
+        ticket.event_id.toString() === id
+      );
+      setTickets(eventTickets);
+      
+    } catch (err) {
+      setError(err.message || 'Something went wrong');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchData();
+}, [id]);
 
   if (loading) {
     return (

@@ -1,7 +1,61 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from "axios";
 export default function Navbar() {
+  const navigate = useNavigate();
+  const [userName, setUserName] = useState(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      axios.get("http://127.0.0.1:8000/api/user", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      })
+      .then(res => {
+        setUserName(res.data.name);
+      })
+      .catch(err => {
+        console.error("Error fetching user info:", err);
+        setUserName(null);
+      });
+    } else {
+      setUserName(null);
+    }
+  }, []);
+  const handleLogout = () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      navigate("/sign-in");
+      return;
+    }
+
+    axios.post("http://127.0.0.1:8000/api/logout", {}, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+    })
+    .then(() => {
+      localStorage.removeItem("token");
+      setUserName(null);   
+      navigate("/sign-in");
+    })
+    .catch((error) => {
+      console.error("Logout failed", error);
+      
+      localStorage.removeItem("token");
+      setUserName(null);
+      navigate("/sign-in");
+    });
+  };
+
+  
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm px-4">
         <Link className="navbar-brand d-flex align-items-center ms-5" to="/Home">
@@ -126,22 +180,56 @@ export default function Navbar() {
             </li>
             
             <li className="nav-item ms-3">
+                {!userName ? (
+          <>
+            <ul style={{ display: 'flex', alignItems: 'center', gap: '8px', listStyle: 'none', padding: 0, margin: 0 }}>
+              <li className="nav-item">
                 <Link 
-                    to="/sign-in" 
-                    className="btn btn-outline-primary custom-outline rounded-pill px-4 py-2"
-                    style={{ borderColor: '#8447E9', color: '#8447E9' }}
+                  to="/sign-in" 
+                  className="btn btn-outline-primary custom-outline rounded-pill px-4 py-2"
+                  style={{ borderColor: '#8447E9', color: '#8447E9' }}
                 >
-                    Login
+                  Login
                 </Link>
-                </li>
-                <li className="nav-item ms-2">
+              </li>
+              <li className="nav-item">
                 <Link 
-                    to="/signup" 
-                    className="btn custom-filled rounded-pill px-4 py-2 text-white"
-                    style={{ backgroundColor: '#8447E9' }}
+                  to="/signup" 
+                  className="btn custom-filled rounded-pill px-4 py-2 text-white"
+                  style={{ backgroundColor: '#8447E9' }}
                 >
-                    Sign Up
-                </Link>
+                  Sign Up
+                </Link> 
+              </li>
+            </ul>
+
+          </>
+        ) : (
+          <li className="nav-item dropdown">
+            <a 
+              className="nav-link dropdown-toggle custom-outline fw-medium px-3 py-2 rounded-2 mx-1" 
+              href="#" 
+              role="button" 
+              data-bs-toggle="dropdown" 
+              aria-expanded="false"
+              style={{ borderColor: '#8447E9', color: '#8447E9' }}
+            >
+             {userName}
+            </a>
+            <ul className="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
+              <li>
+                <button 
+                  className="dropdown-item py-2" 
+                  onClick={handleLogout}
+                  
+                >
+                  Log out
+                </button>
+              </li>
+            </ul>
+          </li>
+
+        )}
             </li>
           </ul>
         </div>

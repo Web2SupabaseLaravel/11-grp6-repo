@@ -4,6 +4,8 @@ import axios from 'axios';
 import EventList from './EventList';
 
 const EventsPage = () => {
+  const token = localStorage.getItem("token");
+  console.log(token);
   // State management
   const [sortBy, setSortBy] = useState('newest first');
   const [searchTerm, setSearchTerm] = useState('');

@@ -24,7 +24,10 @@ Route::post('/login', [AuthController::class, 'login']);
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth:api')->group(function () {
-    
+    Route::middleware('auth:api')->get('/user', function () {
+    return response()->json(auth()->user());
+});
+
 
 
 
@@ -38,6 +41,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/users/{id}', [UserController::class, 'show']);
     Route::put('/users/{id}', [UserController::class, 'update']);
     Route::delete('/users/{id}', [UserController::class, 'destroy']);
+
 
     
     Route::apiResource('event-creations', EventCreationApiController::class)->parameters([

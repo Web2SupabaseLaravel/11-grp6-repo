@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 
 import Navbar from './components/abdallah-components/Navbar'; 
 import EventsPage from './components/abdallah-components/EventsPage';
@@ -33,11 +33,13 @@ import EditeEvent from './components/hadi-components/EditeEvent.jsx';
 import EventlyFooter from './components/hadi-components/Footer.jsx';
 import EventManagementPage from './components/hadi-components/ListEvent.jsx';
 
-function App() {
+function AppContent() {
+  const location = useLocation();
+  const hideNavbarRoutes = ["/sign-in", "/signup", "/forgot-password", "/reset-code", "/reset-password", "/password-changed"];
+  const shouldHideNavbar = hideNavbarRoutes.includes(location.pathname);
   return (
-    <Router>
-      <Navbar />
-
+    <>
+      {!shouldHideNavbar && <Navbar />}
       <div className="App">
         <Routes>
           {/* Abdallah */}
@@ -79,7 +81,15 @@ function App() {
         </Routes>
       </div>
 
-      <EventlyFooter />
+      {!shouldHideNavbar && <EventlyFooter />}
+      </>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AppContent />
     </Router>
   );
 }
