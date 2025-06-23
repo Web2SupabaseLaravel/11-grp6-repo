@@ -26,8 +26,7 @@ const AttendeeList = () => {
             day: 'numeric'
         }) : 'N/A';
 
-        // IMPORTANT: Since 'status' is not in the 'buys' table,
-        // we'll determine the display status based on available information or default.
+        // we'll determine the display status fbased on available information or default.
         let displayStatus = 'Pending';
         if (ticket && ticket.type === 'VIP') {
             displayStatus = 'VIP';
