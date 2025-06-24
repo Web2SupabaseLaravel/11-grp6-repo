@@ -152,7 +152,7 @@ export default function Navbar() {
                 <li><Link className="dropdown-item py-2" to="/admin-dashboard">Admin Dashboard</Link></li>
                 <li><Link className="dropdown-item py-2" to="/event-approval">Event Approval</Link></li>
                 <li><Link className="dropdown-item py-2" to="/reports-dashboard">Reports Dashboard</Link></li>
-                <li><Link className="dropdown-item py-2" to="/user-managment">User Management</Link></li>
+                <li><Link className="dropdown-item py-2" to="/user-management">User Management</Link></li>
               </ul>
             </li>
             <li className="nav-item dropdown">

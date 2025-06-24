@@ -138,7 +138,7 @@ const ReportsDashboard = () => {
         const dateStr = date.toISOString().split('T')[0];
         
         const dayBuys = buys.filter(buy => {
-          const buyDate = buy.created_at.split('T')[0];
+          const buyDate = buy.created_at ? buy.created_at.split('T')[0] : '';
           return buyDate === dateStr;
         });
         
